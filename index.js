@@ -24,8 +24,15 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-app.get("/api/:date", (req, res) => {
-	res.json({ date: req.params.date })
+app.get("/api/:date?", (req, res) => {
+	// Store current date (for empty date param)
+	let date = new Date()
+	// If date param given
+	if(req.params.date) {
+		res.send('hello')
+	} else if (!req.params.date) {
+		res.send({ unix: date.getTime(), utc: date.toUTCString() })
+	}
 })
 
 // listen for requests :)
