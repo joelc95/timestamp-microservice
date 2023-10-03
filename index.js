@@ -29,10 +29,21 @@ app.get("/api/:date?", (req, res) => {
 	let date = new Date()
 	// If date param given
 	if(req.params.date) {
-		res.send('hello')
-	} else if (!req.params.date) {
-		res.send({ unix: date.getTime(), utc: date.toUTCString() })
+		// Convert to numeric string
+		let unixTime = +req.params.date;
+		// Is date given in unix?
+		// If not we can make a Date obj using params
+		if(isNaN(unixTime)) {
+			date = new Date(req.params.date)
+		} else {
+			date = new Date(unixTime)
+		}
+		// Check if either date object is invalid
+		if(!date instanceof Date || isNaN(date.getTime())) {
+			res.send({ error: "Invalid Date" })
+		}
 	}
+	res.send({ unix: date.getTime(), utc: date.toUTCString() })
 })
 
 // listen for requests :)
